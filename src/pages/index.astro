@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+import { BASE_PATH, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { formatDate } from '../lib/formatDate';
+import Layout from '../layouts/Layout.astro';
+
+const posts = (await getCollection('posts')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<section class="hero">
+		<p class="eyebrow">Simple markdown blog</p>
+		<h1>Thoughts published with Astro and GitHub Issues.</h1>
+		<p class="hero-copy">
+			Every post on PocketPostPlace is rendered from a markdown file. New posts are
+			submitted as GitHub issues and published after owner approval.
+		</p>
+		<a class="button-link" href={`${BASE_PATH}/new/`}>Submit a new post</a>
+	</section>
+
+	<section class="section-stack" aria-labelledby="latest-posts">
+		<div class="section-heading">
+			<h2 id="latest-posts">Latest posts</h2>
+			<p>Clean, simple writing with markdown as the source of truth.</p>
+		</div>
+
+		{
+			posts.length === 0 ? (
+				<p class="empty-state">
+					No posts have been published yet. Open the first post issue to get started.
+				</p>
+			) : (
+				<ul class="post-list">
+					{posts.map((post) => (
+						<li class="post-card">
+							<p class="post-date">{formatDate(post.data.pubDate)}</p>
+							<h3>
+								<a href={`${BASE_PATH}/posts/${post.id}/`}>{post.data.title}</a>
+							</h3>
+							<p>{post.data.description}</p>
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</section>
+</Layout>

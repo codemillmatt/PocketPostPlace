@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+import { BASE_PATH, NEW_POST_URL, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = SITE_TITLE,
+	description = SITE_DESCRIPTION,
+} = Astro.props;
+
+const canonicalUrl = Astro.site
+	? new URL(Astro.url.pathname, Astro.site).toString()
+	: Astro.url.toString();
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<div class="page-shell">
+			<header class="site-header">
+				<a class="site-title" href={`${BASE_PATH}/`}>{SITE_TITLE}</a>
+				<nav class="site-nav" aria-label="Primary">
+					<a href={`${BASE_PATH}/`}>Home</a>
+					<a href={`${BASE_PATH}/new/`}>New post</a>
+					<a href={NEW_POST_URL} target="_blank" rel="noreferrer">Open issue</a>
+				</nav>
+			</header>
+			<main class="site-main">
+				<slot />
+			</main>
+		</div>
+	</body>
+</html>

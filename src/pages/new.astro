@@ -1,0 +1,35 @@
+---
+import { NEW_POST_URL, SITE_TITLE } from '../consts';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title={`Submit a new post | ${SITE_TITLE}`}
+	description="Submit a new markdown blog post through a GitHub issue."
+>
+	<section class="section-stack">
+		<p class="eyebrow">New post workflow</p>
+		<h1>Submit a new post as a GitHub issue.</h1>
+		<p class="hero-copy">
+			PocketPostPlace keeps published posts as markdown files in the repository, but
+			new posts start as GitHub issues. When the repository owner comments
+			<code>/approve</code>, automation converts that issue into a published post.
+		</p>
+		<a class="button-link" href={NEW_POST_URL} target="_blank" rel="noreferrer">
+			Open the new post issue form
+		</a>
+	</section>
+
+	<section class="section-stack" aria-labelledby="submission-steps">
+		<div class="section-heading">
+			<h2 id="submission-steps">How it works</h2>
+		</div>
+		<ol class="steps-list">
+			<li>Open the issue form and use the issue title as the post title.</li>
+			<li>Add a short summary and the full markdown body for the post.</li>
+			<li>Submit the issue for review.</li>
+			<li>Wait for the repository owner to comment <code>/approve</code>.</li>
+			<li>The workflow publishes the post, comments with the file path, and closes the issue.</li>
+		</ol>
+	</section>
+</Layout>

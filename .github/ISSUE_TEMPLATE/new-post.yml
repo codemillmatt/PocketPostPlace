@@ -1,0 +1,30 @@
+name: New post
+description: Submit a markdown blog post for PocketPostPlace.
+title: "[Post] "
+labels:
+  - post-submission
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing a post. Use the issue title as the post title, then complete the fields below.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A short description that will appear on the homepage.
+      placeholder: Write a one- or two-sentence summary.
+    validations:
+      required: true
+  - type: textarea
+    id: post-content
+    attributes:
+      label: Post content
+      description: Write the full post body in Markdown.
+      placeholder: |
+        ## Heading
+
+        Write your post here.
+      render: markdown
+    validations:
+      required: true

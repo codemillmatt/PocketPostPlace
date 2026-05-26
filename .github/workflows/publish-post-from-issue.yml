@@ -1,0 +1,81 @@
+name: Publish approved issue post
+
+on:
+  issue_comment:
+    types:
+      - created
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    if: ${{ github.event.issue.pull_request == null && github.event.comment.body == '/approve' && github.event.comment.author_association == 'OWNER' && github.event.issue.state == 'open' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create markdown post
+        id: create_post
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          PUBLISHED_AT: ${{ github.event.comment.created_at }}
+        run: |
+          output="$(node scripts/create-post-from-issue.mjs)"
+          echo "$output"
+          file_path="$(node -e "const data = JSON.parse(process.argv[1]); console.log(data.filePath);" "$output")"
+          echo "file_path=$file_path" >> "$GITHUB_OUTPUT"
+
+      - name: Commit published post
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${{ steps.create_post.outputs.file_path }}"
+          git commit -m "Publish post from issue #${ISSUE_NUMBER}"
+          git push
+
+      - name: Close approved issue
+        uses: actions/github-script@v7
+        env:
+          FILE_PATH: ${{ steps.create_post.outputs.file_path }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Published successfully to \`${process.env.FILE_PATH}\`.`
+            });
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });
+
+      - name: Report failure
+        if: ${{ failure() }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'Publishing failed. Check the workflow run logs for details.'
+            });
