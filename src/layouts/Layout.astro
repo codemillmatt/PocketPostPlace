@@ -28,8 +28,26 @@ const canonicalUrl = Astro.site
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalUrl} />
 		<title>{title}</title>
+		<script is:inline>
+			(() => {
+				const themeStorageKey = 'ppp-theme';
+				const storedTheme = localStorage.getItem(themeStorageKey);
+				const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
+					? storedTheme
+					: prefersDark
+						? 'dark'
+						: 'light';
+
+				document.documentElement.dataset.theme = initialTheme;
+				document.documentElement.style.colorScheme = initialTheme;
+			})();
+		</script>
 	</head>
 	<body>
+		<button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle color theme">
+			<span data-theme-toggle-label>Theme: Light</span>
+		</button>
 		<div class="page-shell">
 			<header class="site-header">
 				<a class="site-title" href={`${BASE_PATH}/`}>{SITE_TITLE}</a>
@@ -43,5 +61,56 @@ const canonicalUrl = Astro.site
 				<slot />
 			</main>
 		</div>
+		<script is:inline>
+			(() => {
+				const themeStorageKey = 'ppp-theme';
+				const root = document.documentElement;
+				const themeToggleButton = document.querySelector('[data-theme-toggle]');
+				const themeToggleLabel = document.querySelector('[data-theme-toggle-label]');
+				const prefersColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+				const getStoredTheme = () => {
+					const value = localStorage.getItem(themeStorageKey);
+					return value === 'light' || value === 'dark' ? value : null;
+				};
+
+				const getSystemTheme = () => (prefersColorScheme.matches ? 'dark' : 'light');
+
+				const applyTheme = (theme) => {
+					root.dataset.theme = theme;
+					root.style.colorScheme = theme;
+
+					if (themeToggleButton instanceof HTMLButtonElement) {
+						themeToggleButton.setAttribute('aria-pressed', String(theme === 'dark'));
+					}
+
+					if (themeToggleLabel instanceof HTMLSpanElement) {
+						themeToggleLabel.textContent = `Theme: ${theme === 'dark' ? 'Dark' : 'Light'}`;
+					}
+				};
+
+				let currentTheme = root.dataset.theme === 'dark' ? 'dark' : 'light';
+				applyTheme(currentTheme);
+
+				if (themeToggleButton instanceof HTMLButtonElement) {
+					themeToggleButton.addEventListener('click', () => {
+						currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+						localStorage.setItem(themeStorageKey, currentTheme);
+						applyTheme(currentTheme);
+					});
+				}
+
+				prefersColorScheme.addEventListener('change', () => {
+					const storedTheme = getStoredTheme();
+
+					if (storedTheme !== null) {
+						return;
+					}
+
+					currentTheme = getSystemTheme();
+					applyTheme(currentTheme);
+				});
+			})();
+		</script>
 	</body>
 </html>
