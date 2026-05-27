@@ -1,6 +1,4 @@
-const DARK_THEME = 'dark';
-const LIGHT_THEME = 'light';
-const THEME_KEY = 'theme-preference';
+import { DARK_THEME, LIGHT_THEME, THEME_STORAGE_KEY } from './theme';
 
 function isDarkTheme(theme: string | undefined) {
 	return theme === DARK_THEME;
@@ -14,7 +12,7 @@ function applyTheme(theme: string) {
 
 	root.dataset.theme = darkMode ? DARK_THEME : LIGHT_THEME;
 	try {
-		sessionStorage.setItem(THEME_KEY, root.dataset.theme);
+		sessionStorage.setItem(THEME_STORAGE_KEY, darkMode ? DARK_THEME : LIGHT_THEME);
 	} catch {}
 
 	if (button) {
@@ -34,7 +32,7 @@ export function setupThemeToggle() {
 
 	let initialTheme = document.documentElement.dataset.theme;
 	try {
-		initialTheme = sessionStorage.getItem(THEME_KEY) || initialTheme;
+		initialTheme = sessionStorage.getItem(THEME_STORAGE_KEY) || initialTheme;
 	} catch {}
 
 	applyTheme(initialTheme || LIGHT_THEME);
