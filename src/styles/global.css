@@ -269,6 +269,43 @@ h3 {
   max-width: 100%;
 }
 
+.post-back-link {
+  display: inline-flex;
+  margin-bottom: 1rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.post-back-link:hover {
+  color: var(--text);
+}
+
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.post-nav-item {
+  flex: 1;
+}
+
+.post-nav-item-next {
+  text-align: right;
+}
+
+.post-nav a {
+  text-decoration: none;
+}
+
+.post-nav a:hover,
+.post-nav a:focus-visible {
+  text-decoration: underline;
+}
+
 @media (max-width: 720px) {
   .page-shell {
     padding-inline: 1rem;
@@ -285,5 +322,13 @@ h3 {
   .post-shell {
     padding: 1.5rem;
     border-radius: 1.25rem;
+  }
+
+  .post-nav {
+    flex-direction: column;
+  }
+
+  .post-nav-item-next {
+    text-align: left;
   }
 }
