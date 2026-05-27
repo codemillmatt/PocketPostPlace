@@ -10,16 +10,6 @@ const posts = (await getCollection('posts')).sort(
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<section class="hero">
-		<p class="eyebrow">Simple markdown blog</p>
-		<h1>Thoughts published with Astro and GitHub Issues.</h1>
-		<p class="hero-copy">
-			Every post on PocketPostPlace is rendered from a markdown file. New posts are
-			submitted as GitHub issues and published after owner approval.
-		</p>
-		<a class="button-link" href={`${BASE_PATH}/new/`}>Submit a new post</a>
-	</section>
-
 	<section class="section-stack" aria-labelledby="latest-posts">
 		<div class="section-heading">
 			<h2 id="latest-posts">Latest posts</h2>
