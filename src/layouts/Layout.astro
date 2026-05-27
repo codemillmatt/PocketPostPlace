@@ -27,6 +27,14 @@ const canonicalUrl = Astro.site
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalUrl} />
+		<script is:inline>
+			try {
+				const storedTheme = sessionStorage.getItem('theme-preference');
+				if (storedTheme === 'light' || storedTheme === 'dark') {
+					document.documentElement.dataset.theme = storedTheme;
+				}
+			} catch {}
+		</script>
 		<title>{title}</title>
 	</head>
 	<body>

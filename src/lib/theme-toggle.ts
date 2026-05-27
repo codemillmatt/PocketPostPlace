@@ -1,5 +1,6 @@
 const DARK_THEME = 'dark';
 const LIGHT_THEME = 'light';
+const THEME_KEY = 'theme-preference';
 
 function isDarkTheme(theme: string | undefined) {
 	return theme === DARK_THEME;
@@ -12,6 +13,9 @@ function applyTheme(theme: string) {
 	const darkMode = isDarkTheme(theme);
 
 	root.dataset.theme = darkMode ? DARK_THEME : LIGHT_THEME;
+	try {
+		sessionStorage.setItem(THEME_KEY, root.dataset.theme);
+	} catch {}
 
 	if (button) {
 		button.setAttribute('aria-label', darkMode ? 'Switch to light mode' : 'Switch to dark mode');
@@ -28,7 +32,12 @@ export function setupThemeToggle() {
 		return;
 	}
 
-	applyTheme(document.documentElement.dataset.theme || LIGHT_THEME);
+	let initialTheme = document.documentElement.dataset.theme;
+	try {
+		initialTheme = sessionStorage.getItem(THEME_KEY) || initialTheme;
+	} catch {}
+
+	applyTheme(initialTheme || LIGHT_THEME);
 
 	button.addEventListener('click', () => {
 		const currentTheme = document.documentElement.dataset.theme;
