@@ -38,11 +38,23 @@ const { Content } = await render(post);
 		<nav class="post-nav" aria-label="Post navigation">
 			<div class="post-nav-item post-nav-item-previous">
 				{previousPost && (
-					<a href={`${BASE_PATH}/posts/${previousPost.id}/`}>← Previous</a>
+					<a
+						href={`${BASE_PATH}/posts/${previousPost.id}/`}
+						aria-label={`Previous post: ${previousPost.data.title}`}
+					>
+						← Previous
+					</a>
 				)}
 			</div>
 			<div class="post-nav-item post-nav-item-next">
-				{nextPost && <a href={`${BASE_PATH}/posts/${nextPost.id}/`}>Next →</a>}
+				{nextPost && (
+					<a
+						href={`${BASE_PATH}/posts/${nextPost.id}/`}
+						aria-label={`Next post: ${nextPost.data.title}`}
+					>
+						Next →
+					</a>
+				)}
 			</div>
 		</nav>
 	</article>
