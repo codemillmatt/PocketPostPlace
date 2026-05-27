@@ -33,15 +33,32 @@ const canonicalUrl = Astro.site
 		<div class="page-shell">
 			<header class="site-header">
 				<a class="site-title" href={`${BASE_PATH}/`}>{SITE_TITLE}</a>
-				<nav class="site-nav" aria-label="Primary">
-					<a href={`${BASE_PATH}/`}>Home</a>
-					<a href={`${BASE_PATH}/new/`}>New post</a>
-					<a href={NEW_POST_URL} target="_blank" rel="noreferrer">Open issue</a>
-				</nav>
+				<div class="site-actions">
+					<nav class="site-nav" aria-label="Primary">
+						<a href={`${BASE_PATH}/`}>Home</a>
+						<a href={`${BASE_PATH}/new/`}>New post</a>
+						<a href={NEW_POST_URL} target="_blank" rel="noreferrer">Open issue</a>
+					</nav>
+					<button
+						type="button"
+						class="theme-toggle"
+						data-theme-toggle
+						aria-label="Switch to dark mode"
+					>
+						<span class="theme-toggle-icon theme-toggle-icon--light" aria-hidden="true">☀️</span>
+						<span class="theme-toggle-icon theme-toggle-icon--dark" aria-hidden="true">🌙</span>
+						<span data-theme-label>Light mode</span>
+					</button>
+				</div>
 			</header>
 			<main class="site-main">
 				<slot />
 			</main>
 		</div>
+		<script>
+			import { setupThemeToggle } from '../lib/theme-toggle';
+
+			setupThemeToggle();
+		</script>
 	</body>
 </html>
