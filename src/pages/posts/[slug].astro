@@ -1,19 +1,25 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { SITE_TITLE } from '../../consts';
+import { BASE_PATH, SITE_TITLE } from '../../consts';
 import { formatDate } from '../../lib/formatDate';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('posts');
+	const posts = (await getCollection('posts')).sort(
+		(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf(),
+	);
 
-	return posts.map((post) => ({
+	return posts.map((post, index) => ({
 		params: { slug: post.id },
-		props: { post },
+		props: {
+			post,
+			previousPost: index > 0 ? posts[index - 1] : undefined,
+			nextPost: index < posts.length - 1 ? posts[index + 1] : undefined,
+		},
 	}));
 }
 
-const { post } = Astro.props;
+const { post, previousPost, nextPost } = Astro.props;
 const { Content } = await render(post);
 ---
 
@@ -22,11 +28,22 @@ const { Content } = await render(post);
 	description={post.data.description}
 >
 	<article class="post-shell">
+		<a class="post-back-link" href={`${BASE_PATH}/`}>← Back to home</a>
 		<p class="post-date">{formatDate(post.data.pubDate)}</p>
 		<h1>{post.data.title}</h1>
 		<p class="post-summary">{post.data.description}</p>
 		<div class="post-body">
 			<Content />
 		</div>
+		<nav class="post-nav" aria-label="Post navigation">
+			<div class="post-nav-item post-nav-item-previous">
+				{previousPost && (
+					<a href={`${BASE_PATH}/posts/${previousPost.id}/`}>← Previous</a>
+				)}
+			</div>
+			<div class="post-nav-item post-nav-item-next">
+				{nextPost && <a href={`${BASE_PATH}/posts/${nextPost.id}/`}>Next →</a>}
+			</div>
+		</nav>
 	</article>
 </Layout>
