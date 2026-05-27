@@ -254,6 +254,11 @@ h3 {
   text-decoration: none;
 }
 
+.post-nav a:hover,
+.post-nav a:focus-visible {
+  text-decoration: underline;
+}
+
 @media (max-width: 720px) {
   .page-shell {
     padding-inline: 1rem;
